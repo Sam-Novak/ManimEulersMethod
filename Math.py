@@ -432,6 +432,6 @@ class SimpleAttemptExplained(Scene):
             euqalsign,
             true
         )
-
+        
         self.clear()
         
