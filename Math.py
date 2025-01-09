@@ -6,6 +6,46 @@ class main(Scene):
         for test in all_scenes:
             test.construct(self)   
         
+class BaseMaterials(Scene):
+    def my(): return Text("m = y").to_edge(DL,buff=0.5)
+    
+    def Initial(): return MathTex("f(0)=1").to_edge(DL,buff=0.5).shift(1*UP)
+    
+    def Grid(): return Axes(x_range=(-1,5,1),
+                y_range=(-1,5,1),
+                x_length=5,
+                y_length=5,
+                ).add_coordinates().set_z_index(-10).shift(2*RIGHT)
+    
+    def GridTwo(): return Axes(x_range=(-1,5,1),
+                y_range=(-2,10,2),
+                x_length=5,
+                y_length=5,
+                ).add_coordinates().set_z_index(-10).shift(2*RIGHT)
+
+    def DataTable(): return Table(
+        table=[["0.0","1.0","1.0"],
+                ["1.0","2.0","2.0"],
+                ["2.0","4.0","4.0"],
+                ["3.0","8.0","8.0"]],
+        col_labels=[Text("x"),Text("y"),MathTex(r"\frac{dy}{dx}")]
+    ).scale(0.6).to_edge(UL).shift(0.3*DOWN)
+
+    def PointOne(Grid=Grid()): return Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)).move_to(Grid.c2p(0,1)).set_z_index(3)  
+
+    def PointTwo(Grid=Grid()): return (Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))).move_to(Grid.c2p(1,2)).set_z_index(3)
+
+    PointThree=(Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)))
+    PointThree.move_to(Grid.c2p(2,4)).set_z_index(3)
+
+    PointFour=Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))
+    PointFour.move_to(Grid.c2p(3,8)).set_z_index(3)
+
+    Segment1=Line(start=Grid.c2p(0,1,0),end=Grid.c2p(1,2,0),color=RED,stroke_width=6).set_z_index(-3)        
+    Segment2=Line(start=Grid.c2p(1,2,0),end=Grid.c2p(2,4,0),color=RED,stroke_width=6).set_z_index(-3)
+    Segment3=Line(start=Grid.c2p(2,4,0),end=Grid.c2p(3,8,0),color=RED,stroke_width=6).set_z_index(-3)
+    Ray4=Arrow(start=Grid.c2p(3,8,0),end=Grid.c2p(3.5,12,0),color=RED,buff=0,tip_shape=StealthTip)
+ 
 class Intro(Scene):
     def construct(self):
         Euler= Text("Euler's Method")
@@ -22,8 +62,7 @@ class Intro(Scene):
 
 class SimpleAttempt(Scene):
     def construct(self):
-        my=Text("m = y").to_edge(DL,buff=0.5)
-        self.add(my)
+        self.add(BaseMaterials.my)
 
         grid = Axes(
             x_range=(-1,5,1),
@@ -71,40 +110,12 @@ class SimpleAttempt(Scene):
    
 class SimpleAttemptLines(Scene):
     def construct(self):
-        my=Text("m = y").to_edge(DL,buff=0.5)
-        Initial = MathTex("f(0)=1").to_edge(DL,buff=0.5).shift(1*UP)
-
-        Grid = Axes(
-            x_range=(-1,5,1),
-            y_range=(-1,5,1),
-            x_length=5,
-            y_length=5,
-        ).add_coordinates().set_z_index(-10)
-        
-        DataTable=Table(
-            table=[["0.00","1.00","1.00"],
-                   ["0.00","1.00","1.00"],
-                   ["0.00","1.00","1.00"],
-                   ["0.00","1.00","1.00"]],
-            col_labels=[Text("x"),Text("y"),MathTex(r"\frac{dy}{dx}")]
-            
-        ).scale(0.6).to_edge(UL).shift(0.3*DOWN)
+        self.add(BaseMaterials.my,BaseMaterials.Initial,BaseMaterials.Grid,BaseMaterials.PointOne)
+        DataTable = BaseMaterials.DataTable
+        Grid = BaseMaterials.Grid
         
         DataTable[5].set_points_by_ends(end=(DataTable[5].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[5].get_end())
         DataTable[6].set_points_by_ends(end=(DataTable[6].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[6].get_end())
-
-        DataTable[0][3]=Text("0.00",).move_to(DataTable[0][3].get_center()).scale(0.6)
-        DataTable[0][4]=Text("1.00",).move_to(DataTable[0][4].get_center()).scale(0.6)
-        DataTable[0][5]=Text("1.00",).move_to(DataTable[0][5].get_center()).scale(0.6)
-        DataTable[0][6]=Text("0.00",).move_to(DataTable[0][6].get_center()).scale(0.6)
-        DataTable[0][7]=Text("0.00",).move_to(DataTable[0][7].get_center()).scale(0.6)
-        DataTable[0][8]=Text("0.00",).move_to(DataTable[0][8].get_center()).scale(0.6)
-        DataTable[0][9]=Text("0.00",).move_to(DataTable[0][9].get_center()).scale(0.6)
-        DataTable[0][10]=Text("0.00",).move_to(DataTable[0][10].get_center()).scale(0.6)
-        DataTable[0][11]=Text("0.00",).move_to(DataTable[0][11].get_center()).scale(0.6)
-        DataTable[0][12]=Text("3.00",).move_to(DataTable[0][12].get_center()).scale(0.6)
-        DataTable[0][13]=Text("8.00",).move_to(DataTable[0][13].get_center()).scale(0.6)
-        DataTable[0][14]=Text("8.00",).move_to(DataTable[0][14].get_center()).scale(0.6)
 
         InitialPoint=Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))
         InitialPoint.move_to(Grid.coords_to_point(0,1)).set_z_index(3)
@@ -117,21 +128,21 @@ class SimpleAttemptLines(Scene):
         
         DataTable[0][6] = always_redraw(
             lambda : Text(
-                text=f'{Grid.p2c(PointTwo.get_center())[0]:.2f}',
+                text=f'{Grid.p2c(PointTwo.get_center())[0]:.1f}',
                 
                 ).move_to(DataTable[0][6].get_center()).scale(0.6)
         )
         
         DataTable[0][7] = always_redraw(
             lambda : Text(
-                text=f'{Grid.p2c(PointTwo.get_center())[1]:.2f}',
+                text=f'{Grid.p2c(PointTwo.get_center())[1]:.1f}',
                 
                 ).move_to(DataTable[0][7].get_center()).scale(0.6)
         )
 
         DataTable[0][8] = always_redraw(
             lambda : Text(
-                text=f'{Grid.p2c(PointTwo.get_center())[1]:.2f}',
+                text=f'{Grid.p2c(PointTwo.get_center())[1]:.1f}',
                 
                 ).move_to(DataTable[0][8].get_center()).scale(0.6)
         )
@@ -144,9 +155,7 @@ class SimpleAttemptLines(Scene):
         SlopeTwoB = always_redraw(
             lambda : DashedLine(start=(PointTwo.get_center()),end=(PointTwo.get_center())+normalize((1,Grid.p2c(PointTwo.get_center())[1],0)),color=GREEN_C)
         )
-        
-        self.add(Initial,my,Grid,InitialPoint)
-
+    
         self.play(Write(Slope1),Write(Slope1b))   
 
         self.play(
@@ -196,21 +205,21 @@ class SimpleAttemptLines(Scene):
         
         DataTable[0][9] = always_redraw(
             lambda : Text(
-                text=f'{Grid.p2c(PointThree.get_center())[0]:.2f}',
+                text=f'{Grid.p2c(PointThree.get_center())[0]:.1f}',
                 
                 ).move_to(DataTable[0][9].get_center()).scale(0.6)
         )
         
         DataTable[0][10] = always_redraw(
             lambda : Text(
-                text=f'{Grid.p2c(PointThree.get_center())[1]:.2f}',
+                text=f'{Grid.p2c(PointThree.get_center())[1]:.1f}',
                 
                 ).move_to(DataTable[0][10].get_center()).scale(0.6)
         )
 
         DataTable[0][11] = always_redraw(
             lambda : Text(
-                text=f'{Grid.p2c(PointThree.get_center())[1]:.2f}',
+                text=f'{Grid.p2c(PointThree.get_center())[1]:.1f}',
                 
                 ).move_to(DataTable[0][11].get_center()).scale(0.6)
         )
@@ -296,52 +305,21 @@ class SimpleAttemptLines(Scene):
 
 class SimpleAttemptExplained(Scene):
     def construct(self):
-        my=Text("m = y").to_edge(DL,buff=0.5)
-        Initial = MathTex("f(0)=1").to_edge(DL,buff=0.5).shift(1*UP)
+        my = BaseMaterials.my
+        Initial=BaseMaterials.Initial
         
-        Grid = Axes(x_range=(-1,5,1),
-                    y_range=(-2,10,2),
-                    x_length=5,
-                    y_length=5,
-                    ).add_coordinates().set_z_index(-10).shift(2*RIGHT)
+        DataTable = BaseMaterials.DataTable
+        Grid = BaseMaterials.Grid
 
-        DataTable=Table(
-            table=[["0.0","1.0","1.0"],
-                   ["0.0","1.0","1.0"],
-                   ["0.0","1.0","1.0"],
-                   ["0.0","1.0","1.0"]],
-            col_labels=[Text("x"),Text("y"),MathTex(r"\frac{dy}{dx}")]
-        ).scale(0.6).to_edge(UL).shift(0.3*DOWN)
-
-        DataTable[0][3]=Text("0.0",).move_to(DataTable[0][3].get_center()).scale(0.6)
-        DataTable[0][4]=Text("1.0",).move_to(DataTable[0][4].get_center()).scale(0.6)
-        DataTable[0][5]=Text("1.0",).move_to(DataTable[0][5].get_center()).scale(0.6)
-        DataTable[0][6]=Text("1.0",).move_to(DataTable[0][6].get_center()).scale(0.6)
-        DataTable[0][7]=Text("2.0",).move_to(DataTable[0][7].get_center()).scale(0.6)
-        DataTable[0][8]=Text("2.0",).move_to(DataTable[0][8].get_center()).scale(0.6)
-        DataTable[0][9]=Text("2.0",).move_to(DataTable[0][9].get_center()).scale(0.6)
-        DataTable[0][10]=Text("4.0",).move_to(DataTable[0][10].get_center()).scale(0.6)
-        DataTable[0][11]=Text("4.0",).move_to(DataTable[0][11].get_center()).scale(0.6)
-        DataTable[0][12]=Text("3.0",).move_to(DataTable[0][12].get_center()).scale(0.6)
-        DataTable[0][13]=Text("8.0",).move_to(DataTable[0][13].get_center()).scale(0.6)
-        DataTable[0][14]=Text("8.0",).move_to(DataTable[0][14].get_center()).scale(0.6)
-
-        PointOne=Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))
-        PointOne.move_to(Grid.c2p(0,1)).set_z_index(3)  
-
-        PointTwo=(Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)))
-        PointTwo.move_to(Grid.c2p(1,2)).set_z_index(3)
-
-        PointThree=(Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)))
-        PointThree.move_to(Grid.c2p(2,4)).set_z_index(3)
-
-        PointFour=Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))
-        PointFour.move_to(Grid.c2p(3,8)).set_z_index(3)
-
-        Segment1=Line(start=Grid.c2p(0,1,0),end=Grid.c2p(1,2,0),color=RED,stroke_width=6).set_z_index(-3)        
-        Segment2=Line(start=Grid.c2p(1,2,0),end=Grid.c2p(2,4,0),color=RED,stroke_width=6).set_z_index(-3)
-        Segment3=Line(start=Grid.c2p(2,4,0),end=Grid.c2p(3,8,0),color=RED,stroke_width=6).set_z_index(-3)
-        Ray4=Arrow(start=Grid.c2p(3,8,0),end=Grid.c2p(3.5,12,0),color=RED,buff=0,tip_shape=StealthTip)
+        PointOne=BaseMaterials.PointOne
+        PointTwo=BaseMaterials.PointTwo
+        PointThree=BaseMaterials.PointThree
+        PointFour=BaseMaterials.PointFour
+        
+        Segment1=BaseMaterials.Segment1
+        Segment2=BaseMaterials.Segment2
+        Segment3=BaseMaterials.Segment3
+        Ray4=BaseMaterials.Ray4
 
         self.add(
             my,
@@ -357,17 +335,14 @@ class SimpleAttemptExplained(Scene):
             Segment3,
             Ray4
         )
-        
         ApproximationText= MathTex(r"f(x)=2^x",color=PURPLE_A).scale(1.3)
         ApproximationText.to_edge(DL,buff=0.5).shift(2.5*RIGHT)
         self.play(Write(ApproximationText))
         Approximation = Grid.plot(function=lambda x:2**x,x_range=(-0.1,3),color=PURPLE,stroke_width=9)
         self.play(Write(Approximation),
-                  Unwrite(Segment1),
-                  Unwrite(Segment2),
-                  Unwrite(Segment3),
                   Unwrite(Ray4),
                   run_time=2)
+        
         
         RealText= MathTex(r"f(x)=e^x",color=GREEN_A).scale(1.3)
         RealText.to_edge(DL,buff=1.5).shift(1.5*RIGHT)
@@ -418,20 +393,14 @@ class SimpleAttemptExplained(Scene):
         self.play(Transform(LimitProblem,Estimation))
         euqalsign= Text("≈").scale(2)
         true=MathTex(r"\lim_{x \to \infty} \frac{e^x}{x}",color=GREEN).scale(2).shift(RIGHT*3)
-        self.remove(LimitProblem,Estimation,TotalError)
+        self.remove(LimitProblem,Estimation,TotalError,ErrorValues)
         self.play(Transform(Estimation,MathTex(r"\lim_{x \to \infty} \frac{2^x}{x}",color=RED).scale(2).shift(LEFT*3)),FadeOut(Limit))
         self.play(Write(true),Write(euqalsign))
         self.play(Indicate(euqalsign))
-
+    
         self.play(mob.animate.shift(15*RIGHT) for mob in self.mobjects)
-
-        self.remove(
-            Limit,
-            LimitProblem,
-            Estimation,
-            euqalsign,
-            true
-        )
         
-        self.clear()
-        
+        self.play(Unwrite(Approximation),
+                  Unwrite(RealGraph),
+                  Unwrite(ApproximationText),
+                  Transform(DataTable,BaseMaterials.DataTable))
