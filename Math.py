@@ -32,19 +32,14 @@ class BaseMaterials(Scene):
     ).scale(0.6).to_edge(UL).shift(0.3*DOWN)
 
     def PointOne(Grid=Grid()): return Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)).move_to(Grid.c2p(0,1)).set_z_index(3)  
-
     def PointTwo(Grid=Grid()): return (Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))).move_to(Grid.c2p(1,2)).set_z_index(3)
+    def PointThree(Grid=Grid()): return (Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))).move_to(Grid.c2p(2,4)).set_z_index(3)
+    def PointFour(Grid=Grid()): return Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)).move_to(Grid.c2p(3,8)).set_z_index(3)
 
-    PointThree=(Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)))
-    PointThree.move_to(Grid.c2p(2,4)).set_z_index(3)
-
-    PointFour=Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))
-    PointFour.move_to(Grid.c2p(3,8)).set_z_index(3)
-
-    Segment1=Line(start=Grid.c2p(0,1,0),end=Grid.c2p(1,2,0),color=RED,stroke_width=6).set_z_index(-3)        
-    Segment2=Line(start=Grid.c2p(1,2,0),end=Grid.c2p(2,4,0),color=RED,stroke_width=6).set_z_index(-3)
-    Segment3=Line(start=Grid.c2p(2,4,0),end=Grid.c2p(3,8,0),color=RED,stroke_width=6).set_z_index(-3)
-    Ray4=Arrow(start=Grid.c2p(3,8,0),end=Grid.c2p(3.5,12,0),color=RED,buff=0,tip_shape=StealthTip)
+    def Segment1(Grid=Grid()): return Line(start=Grid.c2p(0,1,0),end=Grid.c2p(1,2,0),color=RED,stroke_width=6).set_z_index(-3)        
+    def Segment2(Grid=Grid()): return Line(start=Grid.c2p(1,2,0),end=Grid.c2p(2,4,0),color=RED,stroke_width=6).set_z_index(-3)
+    def Segment3(Grid=Grid()): return Line(start=Grid.c2p(2,4,0),end=Grid.c2p(3,8,0),color=RED,stroke_width=6).set_z_index(-3)
+    def Ray4(Grid=Grid()): return Arrow(start=Grid.c2p(3,8,0),end=Grid.c2p(3.5,12,0),color=RED,buff=0,tip_shape=StealthTip)
  
 class Intro(Scene):
     def construct(self):
@@ -62,7 +57,7 @@ class Intro(Scene):
 
 class SimpleAttempt(Scene):
     def construct(self):
-        self.add(BaseMaterials.my)
+        self.add(BaseMaterials.my())
 
         grid = Axes(
             x_range=(-1,5,1),
@@ -110,9 +105,13 @@ class SimpleAttempt(Scene):
    
 class SimpleAttemptLines(Scene):
     def construct(self):
-        self.add(BaseMaterials.my,BaseMaterials.Initial,BaseMaterials.Grid,BaseMaterials.PointOne)
-        DataTable = BaseMaterials.DataTable
-        Grid = BaseMaterials.Grid
+        self.add(
+            BaseMaterials.my(),
+            BaseMaterials.Initial(),
+            BaseMaterials.Grid(),
+            BaseMaterials.PointOne())
+        DataTable = BaseMaterials.DataTable()
+        Grid = BaseMaterials.Grid()
         
         DataTable[5].set_points_by_ends(end=(DataTable[5].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[5].get_end())
         DataTable[6].set_points_by_ends(end=(DataTable[6].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[6].get_end())
@@ -305,21 +304,21 @@ class SimpleAttemptLines(Scene):
 
 class SimpleAttemptExplained(Scene):
     def construct(self):
-        my = BaseMaterials.my
-        Initial=BaseMaterials.Initial
+        my = BaseMaterials.my()
+        Initial=BaseMaterials.Initial()
         
-        DataTable = BaseMaterials.DataTable
-        Grid = BaseMaterials.Grid
+        DataTable = BaseMaterials.DataTable()
+        Grid = BaseMaterials.Grid()
 
-        PointOne=BaseMaterials.PointOne
-        PointTwo=BaseMaterials.PointTwo
-        PointThree=BaseMaterials.PointThree
-        PointFour=BaseMaterials.PointFour
+        PointOne=BaseMaterials.PointOne()
+        PointTwo=BaseMaterials.PointTwo()
+        PointThree=BaseMaterials.PointThree()
+        PointFour=BaseMaterials.PointFour()
         
-        Segment1=BaseMaterials.Segment1
-        Segment2=BaseMaterials.Segment2
-        Segment3=BaseMaterials.Segment3
-        Ray4=BaseMaterials.Ray4
+        Segment1=BaseMaterials.Segment1()
+        Segment2=BaseMaterials.Segment2()
+        Segment3=BaseMaterials.Segment3()
+        Ray4=BaseMaterials.Ray4()
 
         self.add(
             my,
@@ -403,4 +402,4 @@ class SimpleAttemptExplained(Scene):
         self.play(Unwrite(Approximation),
                   Unwrite(RealGraph),
                   Unwrite(ApproximationText),
-                  Transform(DataTable,BaseMaterials.DataTable))
+                  Transform(DataTable,BaseMaterials.DataTable()))
