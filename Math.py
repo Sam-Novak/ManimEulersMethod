@@ -1,8 +1,14 @@
 from manim import *
+import math
 
 class main(Scene):
     def construct(self):
-        all_scenes = [Intro,SimpleAttempt,SimpleAttemptLines,SimpleAttemptExplained]
+        all_scenes = [Intro,
+                      SimpleAttempt,
+                      SimpleAttemptLines,
+                      SimpleAttemptExplained,
+                      SecondAttempt, 
+                      Problem2]
         for test in all_scenes:
             test.construct(self)   
         
@@ -40,6 +46,36 @@ class BaseMaterials(Scene):
     def Segment2(Grid=Grid()): return Line(start=Grid.c2p(1,2,0),end=Grid.c2p(2,4,0),color=RED,stroke_width=6).set_z_index(-3)
     def Segment3(Grid=Grid()): return Line(start=Grid.c2p(2,4,0),end=Grid.c2p(3,8,0),color=RED,stroke_width=6).set_z_index(-3)
     def Ray4(Grid=Grid()): return Arrow(start=Grid.c2p(3,8,0),end=Grid.c2p(3.5,12,0),color=RED,buff=0,tip_shape=StealthTip)
+    
+    def eulersMethod(Equation, Initial,step,PointCount, MakeFancyPoints=False, MakeLines= False,Grid=Grid()):
+        Points = [Initial]
+        
+        for i in range(1,PointCount):
+            Points.append((Points[i-1][0]+step,Points[i-1][1]+Equation(*Points[i-1])))
+            
+        Pnts = VGroup()
+        for pnt in Points:
+            Pnts.add(Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1
+                    ).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1)
+                    ).move_to(Grid.c2p(pnt[0],pnt[1])).set_z_index(3))
+            
+        Lines = VGroup()
+        for i in range(6):
+            Lines.add(Line(start=Grid.c2p(*Points[i])
+                    ,end=Grid.c2p(*Points[i+1])
+                    ,color=RED,stroke_width=6).set_z_index(-3))
+            
+        if not MakeFancyPoints and not MakeLines:
+            return Points    
+        if MakeFancyPoints and not MakeLines:
+            return Pnts
+        if MakeLines and not MakeFancyPoints:
+            return Lines    
+        if MakeFancyPoints and MakeLines:
+            return Pnts,Lines
+            
+            
+        
  
 class Intro(Scene):
     def construct(self):
@@ -508,3 +544,31 @@ class SecondAttempt(Scene):
         
         RealGraph = Grid.plot(function= lambda x:2.71828**x,x_range=(-0.1,4),color=GREEN_A,stroke_width=9)
         self.play(Write(RealGraph))
+        
+        self.play(mob.animate.shift(15*RIGHT) for mob in self.mobjects)
+        
+class Problem2(Scene):
+    def construct(self):
+        Background = NumberPlane(
+            x_range=(-1,15,1),
+            x_length=17*0.9,
+            y_range=(-6,6,1),
+            y_length=13*0.9,
+        )
+        
+        self.play(Write(Background))
+        
+        DataRectangle = Rectangle(color=GRAY_D,height=3.5,width=4,fill_opacity=1,stroke_opacity=0).to_edge(UR,buff=0.5).fade(0.2)
+        self.play(Write(DataRectangle))
+        self.wait()
+        
+        Ex2 = MathTex(r"f(x) &= \frac{1}{\sqrt{x*y}} \\ f(1) &= 0.5 \\ \text{Step} &= 0.5").move_to(DataRectangle.get_center())
+        self.play(Write(Ex2))
+        
+        def Equation(x,y):
+            return 1/math.sqrt(x*y)
+        
+        Points, Lines = BaseMaterials.eulersMethod(Equation,(1,0.5),0.5,10,True,True,Grid=Background)
+        self.play(Write(Points),
+                  Write(Lines))
+        
