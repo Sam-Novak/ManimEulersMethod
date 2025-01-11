@@ -60,7 +60,7 @@ class BaseMaterials(Scene):
                     ).move_to(Grid.c2p(pnt[0],pnt[1])).set_z_index(3))
             
         Lines = VGroup()
-        for i in range(6):
+        for i in range(PointCount-1):
             Lines.add(Line(start=Grid.c2p(*Points[i])
                     ,end=Grid.c2p(*Points[i+1])
                     ,color=RED,stroke_width=6).set_z_index(-3))
@@ -562,13 +562,13 @@ class Problem2(Scene):
         self.play(Write(DataRectangle))
         self.wait()
         
-        Ex2 = MathTex(r"f(x) &= \frac{1}{\sqrt{x*y}} \\ f(1) &= 0.5 \\ \text{Step} &= 0.5").move_to(DataRectangle.get_center())
+        Ex2 = MathTex(r"\frac{dy}{dx} &= \frac{1}{x+y} \\ f(0.5) &= 0.5 \\ \text{Step} &= 0.5").move_to(DataRectangle.get_center())
         self.play(Write(Ex2))
         
         def Equation(x,y):
-            return 1/math.sqrt(x*y)
+            return 1/(x+y)
         
-        Points, Lines = BaseMaterials.eulersMethod(Equation,(1,0.5),0.5,10,True,True,Grid=Background)
+        Points, Lines = BaseMaterials.eulersMethod(Equation,(0.5,0.5),0.5,10,True,True,Grid=Background)
         self.play(Write(Points),
-                  Write(Lines))
+                  FadeIn(Lines))
         
