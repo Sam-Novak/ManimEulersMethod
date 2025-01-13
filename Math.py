@@ -197,10 +197,6 @@ class SimpleAttemptLines(Scene):
             Write(DataTable[0][0:6]),
             Write(DataTable[5:]),
             Write(DataTable[1]),
-            Grid.animate.shift(2*RIGHT),
-            Slope1.animate.shift(2*RIGHT),
-            Slope1b.animate.shift(2*RIGHT),
-            InitialPoint.animate.shift(2*RIGHT),
             )
     
         self.play(FadeIn(Point2))
@@ -304,7 +300,7 @@ class SimpleAttemptLines(Scene):
                                       y_range=(-2,10,2),
                                       x_length=5,
                                       y_length=5,
-                                      ).add_coordinates().set_z_index(-10).shift(4*RIGHT)),
+                                      ).add_coordinates().set_z_index(-10).shift(2*RIGHT)),
                   InitialPoint.animate.move_to(newPoints[0]),
                   Segment1.animate.set_points_by_ends(start=newPoints[1],end=newPoints[2]),
                   Point2.animate.move_to(newPoints[3]),
