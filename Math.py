@@ -8,7 +8,8 @@ class main(Scene):
                       SimpleAttemptLines,
                       SimpleAttemptExplained,
                       SecondAttempt, 
-                      Problem2]
+                      Problem2,
+                      Problem3]
         for test in all_scenes:
             test.construct(self)   
         
@@ -51,7 +52,7 @@ class BaseMaterials(Scene):
         Points = [Initial]
         
         for i in range(1,PointCount):
-            Points.append((Points[i-1][0]+step,Points[i-1][1]+Equation(*Points[i-1])))
+            Points.append((Points[i-1][0]+step,Points[i-1][1]+step*Equation(*Points[i-1])))
             
         Pnts = VGroup()
         for pnt in Points:
@@ -74,9 +75,6 @@ class BaseMaterials(Scene):
         if MakeFancyPoints and MakeLines:
             return Pnts,Lines
             
-            
-        
- 
 class Intro(Scene):
     def construct(self):
         Euler= Text("Euler's Method")
@@ -137,17 +135,19 @@ class SimpleAttempt(Scene):
         Initial.to_edge(DL,buff=0.5).shift(1*UP)
         self.play(InitialX.animate.become(Initial),InitialY.animate.become(Initial))
 
+        self.play(Point01.animate.shift(2*RIGHT),grid.animate.shift(2*RIGHT))
         self.clear()
    
 class SimpleAttemptLines(Scene):
     def construct(self):
+        
+        DataTable = BaseMaterials.DataTable()
+        Grid = BaseMaterials.Grid()
+        
         self.add(
             BaseMaterials.my(),
             BaseMaterials.Initial(),
-            BaseMaterials.Grid(),
-            BaseMaterials.Point1())
-        DataTable = BaseMaterials.DataTable()
-        Grid = BaseMaterials.Grid()
+            Grid,)
         
         DataTable[5].set_points_by_ends(end=(DataTable[5].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[5].get_end())
         DataTable[6].set_points_by_ends(end=(DataTable[6].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[6].get_end())
@@ -304,7 +304,7 @@ class SimpleAttemptLines(Scene):
                                       y_range=(-2,10,2),
                                       x_length=5,
                                       y_length=5,
-                                      ).add_coordinates().set_z_index(-10).shift(2*RIGHT)),
+                                      ).add_coordinates().set_z_index(-10).shift(4*RIGHT)),
                   InitialPoint.animate.move_to(newPoints[0]),
                   Segment1.animate.set_points_by_ends(start=newPoints[1],end=newPoints[2]),
                   Point2.animate.move_to(newPoints[3]),
@@ -558,17 +558,92 @@ class Problem2(Scene):
         
         self.play(Write(Background))
         
-        DataRectangle = Rectangle(color=GRAY_D,height=3.5,width=4,fill_opacity=1,stroke_opacity=0).to_edge(UR,buff=0.5).fade(0.2)
+        DataRectangle = Rectangle(color=GRAY_D,height=4.5,width=4,fill_opacity=1,stroke_opacity=0).to_edge(UR,buff=0.5).fade(0.2)
         self.play(Write(DataRectangle))
         self.wait()
         
-        Ex2 = MathTex(r"\frac{dy}{dx} &= \frac{1}{x+y} \\ f(0.5) &= 0.5 \\ \text{Step} &= 0.5").move_to(DataRectangle.get_center())
+        Ex2 = MathTex(r"\frac{dy}{dx} &= \frac{1}{x+y} \\ f(0.5) &= 0.5 \\ f(5) &= ? \\ \text{Step} &= 0.5 ").move_to(DataRectangle.get_center())
         self.play(Write(Ex2))
+        
+        self.play(Indicate(Ex2[0][:11]))
+        self.play(Indicate(Ex2[0][11:21]))
+        self.play(Indicate(Ex2[0][21:27]))
+        self.play(Indicate(Ex2[0][27:]))
         
         def Equation(x,y):
             return 1/(x+y)
         
+        
         Points, Lines = BaseMaterials.eulersMethod(Equation,(0.5,0.5),0.5,10,True,True,Grid=Background)
         self.play(Write(Points),
                   FadeIn(Lines))
+        
+        answer = Text("f(5) ≈ 3.25")
+        self.play(Write(answer))
+        
+        self.play(Unwrite(answer),Unwrite(Points),Unwrite(Lines),Unwrite(Ex2),Unwrite(DataRectangle))
+        self.clear()
+        
+class Problem3(Scene):
+    def construct(self):
+        Background = NumberPlane(
+            x_range=(-1,15,1),
+            x_length=17*0.9,
+            y_range=(-6,6,1),
+            y_length=13*0.9,
+        )
+        
+        DataRectangle = Rectangle(color=GRAY_D,height=4.5,width=4,fill_opacity=1,stroke_opacity=0).to_edge(UR,buff=0.5).fade(0.2)
+        
+        self.add(Background,DataRectangle)
+        
+        Ex3 = MathTex(r"\frac{dy}{dx} &= -2.3y \\ f(0) &= 1 \\ f(5) &= ? \\ \text{Step} &= 1 ").move_to(DataRectangle.get_center())
+        self.play(Write(Ex3))
+        
+        self.play(Indicate(Ex3[0][:11]))
+        self.play(Indicate(Ex3[0][11:17]))
+        self.play(Indicate(Ex3[0][17:23]))
+        self.play(Indicate(Ex3[0][23:]))
+        
+        def Equation(x,y):
+            return -2.3*y
+        
+        Points, Lines = BaseMaterials.eulersMethod(Equation,(0,1),1,10,True,True,Grid=Background)
+        
+        
+        self.play(Write(Points), Write(Lines))
+        
+        sinGraphtext = MathTex(r"x*sin(x)").scale(2)
+        sinGraph = Background.plot(function= lambda x:(x+0.5)*math.sin(3*(x+0.5)),x_range=(-0.1,9),color=PURPLE,stroke_width=9)
+        self.play(Write(sinGraph),Write(sinGraphtext))
+        self.wait()
+        self.play(Unwrite(sinGraph),Unwrite(sinGraphtext))
+        
+        realGraphtext = MathTex(r"e^{-2.3x}").scale(2)
+        realGraph = Background.plot(function= lambda x:2.71828**(x*-2.3),x_range=(-0.1,9),color=GREEN,stroke_width=9)
+        self.play(Write(realGraph),Write(realGraphtext))
+        
+        self.play(realGraphtext.animate.to_edge(DR))
+        self.wait()
+        
+        self.play(Indicate(Ex3[0][23:]))
+        
+        
+        self.play(Indicate(Points[0]))
+        self.wait() 
+        self.play(Indicate(Points[1]))
+        for i in range(len(Points[2:6])):
+            self.play(Indicate(Points[2+i]))
+        
+        self.play(Transform(Ex3[0][28:],Text("0.5").move_to(Ex3[0][28:])))
+        
+        NewPoints, NewLines = BaseMaterials.eulersMethod(Equation,(0,1),0.7,10,True,True,Grid=Background)
+        
+        self.play(Transform(Points,NewPoints),Transform(Lines,NewLines))
+        
+        answer =Text("f(5) ≈ 0").scale(2)
+        
+        self.play(Write(answer))
+         
+        
         
