@@ -147,13 +147,14 @@ class SimpleAttemptLines(Scene):
         self.add(
             BaseMaterials.my(),
             BaseMaterials.Initial(),
-            Grid,)
+            Grid)
         
         DataTable[5].set_points_by_ends(end=(DataTable[5].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[5].get_end())
         DataTable[6].set_points_by_ends(end=(DataTable[6].get_start()[0],DataTable[2].get_start()[1],0),start= DataTable[6].get_end())
 
         InitialPoint=Circle(radius=0.1,fill_color=BLUE,stroke_opacity=0,fill_opacity=1).add(Circle(radius=0.03,fill_color=BLUE_E,stroke_opacity=0,fill_opacity=1))
         InitialPoint.move_to(Grid.coords_to_point(0,1)).set_z_index(3)
+        self.add(InitialPoint)
 
         Slope1b=Arrow(start=Grid.c2p(0,1,0),end=Grid.c2p(-1.2,-0.2,0),color=RED,buff=0,tip_shape=StealthTip)
         Slope1=Arrow(start=Grid.c2p(0,1,0),end=Grid.c2p(4.2,5.2,0),color=RED,buff=0,tip_shape=StealthTip)     
@@ -181,8 +182,6 @@ class SimpleAttemptLines(Scene):
                 
                 ).move_to(DataTable[0][8].get_center()).scale(0.6)
         )
-
-        Point2.shift(2*RIGHT)
         
         Slope2A = always_redraw(
             lambda : DashedLine(start=(Point2.get_center()),end=(Point2.get_center())-normalize((1,Grid.p2c(Point2.get_center())[1],0)),color=GREEN_C)
@@ -640,6 +639,16 @@ class Problem3(Scene):
         answer =Text("f(5) ≈ 0").scale(2)
         
         self.play(Write(answer))
-         
+               
+        self.play(Unwrite(self.mobjects))
         
+        self.clear()
         
+class Outro(Scene):
+    def construct(self):
+        text = MathTex(r"\frac{dy}{dx} &= m(x,y) \\ f(a) &= b \\ \text{↓Step}&=\text{↓Error} \\ \text{↑Step}&=\text{↑↑↑Error}")
+        
+        self.play(Write(text[0][:12]))
+        self.play(Write(text[0][12:18]))
+        self.play(Write(text[0][18:30]))
+        self.play(Write(text[0][30:]))
