@@ -9,7 +9,9 @@ class main(Scene):
                       SimpleAttemptExplained,
                       SecondAttempt, 
                       Problem2,
-                      Problem3]
+                      Problem3,
+                      Problem4,
+                      Outro  ]
         for test in all_scenes:
             test.construct(self)   
         
@@ -134,7 +136,7 @@ class SimpleAttempt(Scene):
         Initial = MathTex("f(0)=1")
         Initial.to_edge(DL,buff=0.5).shift(1*UP)
         self.play(InitialX.animate.become(Initial),InitialY.animate.become(Initial))
-
+        self.remove(Point01Line)
         self.play(Point01.animate.shift(2*RIGHT),grid.animate.shift(2*RIGHT))
         self.clear()
    
@@ -436,6 +438,7 @@ class SimpleAttemptExplained(Scene):
                   Transform(DataTable,BaseMaterials.DataTable()))
         
         self.play(RealText.animate.shift(DOWN))
+        self.clear()
         
 class SecondAttempt(Scene):
     def construct(self):
@@ -572,11 +575,11 @@ class Problem2(Scene):
         Points, Lines = BaseMaterials.eulersMethod(Equation,(0.5,0.5),0.5,10,True,True,Grid=Background)
         self.play(Write(Points),
                   FadeIn(Lines))
-        
-        answer = Text("f(5) ≈ 3.25")
+
+        answer = Text("f(5) ≈ 2.06")
         self.play(Write(answer))
         
-        self.play(Unwrite(answer),Unwrite(Points),Unwrite(Lines),Unwrite(Ex2),Unwrite(DataRectangle))
+        self.play(Unwrite(answer),Unwrite(Points),Unwrite(Lines),Unwrite(Ex2))
         self.clear()
         
 class Problem3(Scene):
@@ -629,20 +632,92 @@ class Problem3(Scene):
         self.play(Indicate(Points[1]))
         for i in range(len(Points[2:6])):
             self.play(Indicate(Points[2+i]))
-        
-        self.play(Transform(Ex3[0][28:],Text("0.5").move_to(Ex3[0][28:])))
+        test = Text("0.5").move_to(Ex3[0][28]).shift(RIGHT*0.5)
+        self.play(Transform(Ex3[0][28],test))
         
         NewPoints, NewLines = BaseMaterials.eulersMethod(Equation,(0,1),0.7,10,True,True,Grid=Background)
         
         self.play(Transform(Points,NewPoints),Transform(Lines,NewLines))
         
-        answer =Text("f(5) ≈ 0").scale(2)
+        answer =Text("f(5) ≈ 0").scale(1.5).shift(UP*5)
         
         self.play(Write(answer))
                
-        self.play(Unwrite(self.mobjects))
+        self.play(Unwrite(answer),
+                  Unwrite(NewPoints),
+                  Unwrite(NewLines),
+                  Unwrite(realGraph),
+                  Unwrite(realGraphtext),
+                  Unwrite(DataRectangle),
+                  Unwrite(Background),
+                  Unwrite(Ex3),
+                  Unwrite(Points),
+                  Unwrite(Lines),
+                  Unwrite(test),
+                  Unwrite(realGraphtext),)
         
         self.clear()
+      
+class Problem4(Scene):
+    def construct(self):
+        
+        DataRectangle = Rectangle(color=GRAY_D,height=4.5,width=4,fill_opacity=1,stroke_opacity=0).to_edge(UR,buff=0.5).fade(0.2)
+        
+        self.play(Write(DataRectangle))
+        
+        Ex4 = MathTex(r"\frac{dy}{dx} &= y+3x^2 \\ f(0) &= a \\ f(3) &= 2 \\ \text{Step} &= 1 ").move_to(DataRectangle.get_center())
+        self.play(Write(Ex4))
+        
+        self.play(Indicate(Ex4[0][:11]))
+        self.play(Indicate(Ex4[0][11:17]))
+        self.play(Indicate(Ex4[0][17:23]))
+        self.play(Indicate(Ex4[0][23:]))
+        
+        chart = Table([["x","y",":("],
+                       ["0","a"," ? "],
+                       ["1","  ?  ","  ?  "],
+                       ["2","  ?  ","  ?  "],
+                       ["3","2","?"],]).shift(LEFT*3)
+        
+        chart[0][2] = MathTex(r"\frac{dy}{dx}").move_to(chart[0][2])
+        self.play(Write(chart))
+        
+        self.play(Indicate(chart[0][0]))
+        self.play(Indicate(chart[0][3]))
+        self.play(Indicate(chart[0][6]))
+        self.play(Indicate(chart[0][12]))
+        self.play(Indicate(chart[0][1]))
+        self.play(Indicate(chart[0][13]))
+        self.play(Indicate(chart[0][4]))
+        
+        self.play(Unwrite(chart[0][14]))
+        
+        self.play(Transform(chart[0][5],Text(r"a").move_to(chart[0][5])))
+        
+        self.play(Transform(chart[0][7],Text(r"2a").move_to(chart[0][7])))
+        
+        self.play(Transform(chart[0][8],Text(r"3+2a").move_to(chart[0][8])))
+        
+        self.play(Transform(chart[0][10],Text(r"3+4a").move_to(chart[0][10])))
+        
+        self.play(Transform(chart[0][11],Text(r"15+4a").move_to(chart[0][11]).scale(0.9)))
+        
+        Icantthinkofanameforthisitstoolate = Text(r"2=18+8a").to_edge(DR)
+        new=Text("a=-2").to_edge(DR)
+        self.play(Write(Icantthinkofanameforthisitstoolate))
+        self.play(Transform(Icantthinkofanameforthisitstoolate,new))
+        
+        self.play(Unwrite(DataRectangle),
+                  Unwrite(Ex4),
+                  Unwrite(chart),
+                  Unwrite(Icantthinkofanameforthisitstoolate),
+                  Unwrite(new),
+                  )
+        
+        self.clear()
+    
+        
+        
         
 class Outro(Scene):
     def construct(self):
